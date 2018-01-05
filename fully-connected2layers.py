@@ -26,7 +26,7 @@ def main(_):
   train_dir = data_dir + "kfolds/" + "train1.txt"
   test_dir = data_dir + "kfolds/" + "test1.txt"
   train_data = read_data(train_dir)
-  #test_data = read_data(test_dir)
+  test_data = read_data(test_dir)
 
   # Create the model
   x = tf.placeholder(tf.float32, [None, 205])
@@ -65,8 +65,8 @@ def main(_):
         print('step %d, training accuracy %g' % (i, train_accuracy))
       train_step.run(feed_dict={x: batch[0], y_: batch[1], keep_prob: 0.5})
 
-    #print('test accuracy %g' % accuracy.eval(feed_dict={
-    #  x: test_data['images'], y_: test_data['labels'], keep_prob: 1.0}))
+    print('test accuracy %g' % accuracy.eval(feed_dict={
+      x: test_data['images'], y_: test_data['labels'], keep_prob: 1.0}))
 
 if __name__ == '__main__':
   parser = argparse.ArgumentParser()

@@ -11,14 +11,14 @@ def deepnn(f):
     # features.
     with tf.name_scope('dropout'):
         keep_prob = tf.placeholder(tf.float32)
-        #h_fc2_drop = tf.nn.dropout(h_fc2, keep_prob)
+        h_fc1_drop = tf.nn.dropout(h_fc1, keep_prob)
 
-    # Map the 1024 features to 10 classes, one for each digit
+    # Map the 1024 features to 4 classes, one for each digit
     with tf.name_scope('fc2'):
-        W_fc2 = weight_variable([1024, 10])
-        b_fc2 = bias_variable([10])
+        W_fc2 = weight_variable([1024, 4])
+        b_fc2 = bias_variable([4])
 
-        y_conv = tf.matmul(h_fc1, W_fc2) + b_fc2
+        y_conv = tf.matmul(h_fc1_drop, W_fc2) + b_fc2
     return y_conv, keep_prob
 
 def weight_variable(shape):
