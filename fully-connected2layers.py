@@ -14,13 +14,13 @@ def main(_):
   data_dir = "/media/quang-trung/BAEED0D1EED086D3/Dataset/urban_zoning_dataset/geotagged/"
 
   if (len(sys.argv) == 1):
-    print("Input wrong parameter: [DIR DATASET] [GENERATE_DATA / RUN_NeuralNetwork]")
+    print("Input wrong parameter: [DIR DATASET] [GENERATE_DATA / RUN_NeuralNetwork] [CITY]")
     sys.exit(1)
   elif (sys.argv[1]=="GENERATE_DATA"):
-    generate_k_folds(data_dir, 5)
+    generate_k_folds(data_dir, sys.argv[2], 5)
     sys.exit(1)
   elif (sys.argv[1]!="RUN_NeuralNetwork"):
-      print("Input wrong parameter: [DIR DATASET] [GENERATE_DATA / RUN_NeuralNetwork]")
+      print("Input wrong parameter: [DIR DATASET] [GENERATE_DATA / RUN_NeuralNetwork] [CITY]")
       sys.exit(1)
 
   train_dir = data_dir + "kfolds/" + "train1.txt"

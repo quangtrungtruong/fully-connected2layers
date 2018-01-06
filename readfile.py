@@ -51,26 +51,65 @@ def next_batch(data, batch_size, shuffle=True):
         end = data['_index_in_epoch']
         return data['_images'][start:end], data['_labels'][start:end]
 
-def generate_k_folds(data_dir, k):
+def generate_k_folds(data_dir, city, k):
     line_list = []
-    input_file = data_dir + "total.txt"
+    input_file = data_dir + city + ".txt"
     with open(input_file) as f:
         num_line = int(f.readline())
-        perm0 = np.arange(num_line)
-        np.random.shuffle(perm0)
-
         line = f.readline()
+        labels0 = []
+        labels1 = []
+        labels2 = []
+        labels3 = []
+        i_line = 0
+
         while line:
+            l = int([v.strip() for v in line.split(',')][212])
+            if l == 0:
+                labels0 = np.concatenate((labels0, [i_line]), axis=0)
+            elif l == 1:
+                labels1 = np.concatenate((labels1, [i_line]), axis=0)
+            elif l == 2:
+                labels2 = np.concatenate((labels2, [i_line]), axis=0)
+            elif l == 3:
+                labels3 = np.concatenate((labels3, [i_line]), axis=0)
             line_list.append(line)
             line = f.readline()
+            i_line = i_line + 1
 
-    for i in range(0, k):
-        file_dir = data_dir + "kfolds/" + str(i) + ".txt"
-        with open(file_dir, 'w') as file:
-            start = int(num_line/k)*i
-            end = int(num_line/k)*(i+1)
-            #file.write(str(end-start)+'\n')
-            for j in range(start, end):
-                file.write(line_list[perm0[j]])
-            file.closed
+        np.random.shuffle(labels0)
+        np.random.shuffle(labels1)
+        np.random.shuffle(labels2)
+        np.random.shuffle(labels3)
+
+    for z in range(0, 4):
+        for i in range(0, k):
+            file_dir = data_dir + "kfolds/" + city + "/z" + str(z) + "_k" + str(i) + ".txt"
+            with open(file_dir, 'w') as file:
+                if z == 0:
+                    start = int(labels0.shape[0]/k)*i
+                    end = int(labels0.shape[0]/k)*(i+1)
+                    for j in range(start, end):
+                        file.write(line_list[int(labels0[j])])
+
+                if z == 1:
+                    start = int(labels1.shape[0]/k)*i
+                    end = int(labels1.shape[0]/k)*(i+1)
+                    for j in range(start, end):
+                        file.write(line_list[int(labels1[j])])
+
+                if z == 2:
+                    start = int(labels2.shape[0]/k)*i
+                    end = int(labels2.shape[0]/k)*(i+1)
+                    for j in range(start, end):
+                        file.write(line_list[int(labels2[j])])
+
+                if z == 3:
+                    start = int(labels3.shape[0]/k)*i
+                    end = int(labels3.shape[0]/k)*(i+1)
+                    for j in range(start, end):
+                        file.write(line_list[int(labels3[j])])
+
+                file.closed
+
     print("Generated dataset!")
